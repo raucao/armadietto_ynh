@@ -30,11 +30,11 @@ armadietto_config_file="armadietto_config_file.ini"
 #=================================================
 
 show_config() {
-    if [ -e $armadietto_config_file ]
-    then
-        ynh_return "YNH_CONFIG_MAIN_CONFIGURATION_IS_SIGNUP=$(cat $armadietto_config_file)"
-        ynh_return "YNH_CONFIG_MAIN_CONFIGURATION_IS_PUBLIC=$(cat $armadietto_config_file)"
-    fi
+    # if [ -e $armadietto_config_file ]
+    # then
+    #     ynh_return "YNH_CONFIG_MAIN_CONFIGURATION_IS_SIGNUP=$(cat $armadietto_config_file)"
+    #     ynh_return "YNH_CONFIG_MAIN_CONFIGURATION_IS_PUBLIC=$(cat $armadietto_config_file)"
+    # fi
 
     # the default value will be used
 }
@@ -44,8 +44,8 @@ show_config() {
 #=================================================
 
 apply_config() {
-    echo $YNH_CONFIG_MAIN_CONFIGURATION_IS_SIGNUP > $armadietto_config_file
-    echo $YNH_CONFIG_MAIN_CONFIGURATION_IS_PUBLIC > $armadietto_config_file
+    # echo $YNH_CONFIG_MAIN_CONFIGURATION_IS_SIGNUP > $armadietto_config_file
+    # echo $YNH_CONFIG_MAIN_CONFIGURATION_IS_PUBLIC > $armadietto_config_file
 }
 
 #=================================================
