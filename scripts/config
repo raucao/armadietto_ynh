@@ -20,46 +20,23 @@ app=$YNH_APP_INSTANCE_NAME
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
 
 #=================================================
-# SPECIFIC CODE
-#=================================================
-# DECLARE GENERIC FUNCTION
-#=================================================
-
-config_file="$final_path/armadietto.conf"
-
-get_config_value() {
-    option_name="$1"
-    # Get the value of this option in the config file
-    grep "$option_name *=>" "$config_file" | cut -d'>' -f2 | sed s'/ //g' | cut -d',' -f1
-}
-
-#=================================================
 # LOAD VALUES
 #=================================================
 
-# Load the real value from the app config or elsewhere.
-# Then get the value from the form.
-# If the form has a value for a variable, take the value from the form,
-# Otherwise, keep the value from the app config.
-
-# is_signup
-old_is_signup="$(get_config_value is_signup)"
-is_signup="${YNH_CONFIG_MAIN_CONFIGURATION_IS_SIGNUP:-$old_is_signup}"
-
-# is_public
-old_is_public="$(get_config_value is_signup)"
-is_public="${YNH_CONFIG_MAIN_CONFIGURATION_IS_PUBLIC:-$old_is_public}"
+armadietto_config_file="armadietto_config_file.ini"
 
 #=================================================
 # SHOW_CONFIG FUNCTION FOR 'SHOW' COMMAND
 #=================================================
 
 show_config() {
-    # here you are supposed to read some config file/database/other then print the values
-    # ynh_return "YNH_CONFIG_${PANEL_ID}_${SECTION_ID}_${OPTION_ID}=value"
+    if [ -e $armadietto_config_file ]
+    then
+        ynh_return "YNH_CONFIG_MAIN_CONFIGURATION_IS_SIGNUP=$(cat $armadietto_config_file)"
+        ynh_return "YNH_CONFIG_MAIN_CONFIGURATION_IS_PUBLIC=$(cat $armadietto_config_file)"
+    fi
 
-    ynh_return "YNH_CONFIG_MAIN_CONFIGURATION_IS_SIGNUP=$is_signup"
-    ynh_return "YNH_CONFIG_MAIN_CONFIGURATION_IS_PUBLIC=$is_signup"
+    # the default value will be used
 }
 
 #=================================================
@@ -67,37 +44,14 @@ show_config() {
 #=================================================
 
 apply_config() {
-
-    #=================================================
-    # MODIFY ARMADIETTO CONFIGURATION
-    #=================================================
-
-    # Set overwrite_is_signup
-    ynh_app_setting_set --app=$app --key=overwrite_is_signup --value="$overwrite_is_signup"
-    # Set overwrite_is_public
-    ynh_app_setting_set --app=$app --key=overwrite_is_public --value="$overwrite_is_public"
-
-
-    restart_armadietto=0
-
-    # Change configuration if needed
-    # is_signup
-    if [ "$is_signup" != "$old_is_signup" ]
-    then
-        ynh_replace_string --match_string=".*is_signup *=>.*" --replace_string="    always_encrypt    => $always_encrypt," --target_file="$config_file"
-        restart_armadietto=1
-    fi
-
-    # is_public
-    if [ "$is_public" != "$old_is_public" ]
-    then
-        ynh_replace_string --match_string=".*is_public *=>.*" --replace_string="    always_encrypt    => $always_encrypt," --target_file="$config_file"
-        restart_armadietto=1
-    fi
-
+    echo $YNH_CONFIG_MAIN_CONFIGURATION_IS_SIGNUP > $armadietto_config_file
+    echo $YNH_CONFIG_MAIN_CONFIGURATION_IS_PUBLIC > $armadietto_config_file
 }
 
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
-ynh_app_config_run $1
+case $1 in
+    show) show_config;;
+    apply) apply_config;;
+esac
