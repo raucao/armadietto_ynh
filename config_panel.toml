@@ -2,15 +2,24 @@ version = "1.0"
 name= "Armadietto configuration panel"
 
 [main]
-name = "Armadietto signup configuration"
+name = "Armadietto configuration"
 
-    [main.is_signup]
+    [main.configuration]
     name = "Signup configuration"
 
-        [main.is_signup.signup]
+        [main.configuration.is_signup]
         ask.en = "Allow signups?"
         ask.fr = "Accepter les inscriptions ?"
         type = "boolean"
         default = true
         help.en = "Would you like to allow visitors to register and create an account?"
-        help.fr = "Souhaitez-vous autoriser les visiteurs à s'inscrire et créer un compte ?"    
+        help.fr = "Souhaitez-vous autoriser les visiteurs à s'inscrire et créer un compte ?"   
+
+
+        [main.configuration.is_public]
+        ask.en = "Would you like to restrein the access to this web site?"
+        ask.fr = "Souhaitez-vous limiter l'accès à ce site web ?"
+        type = "boolean"
+        default = true
+        help.en = "TODO write english help"
+        help.fr = "TODO écrire l'aide en français"
